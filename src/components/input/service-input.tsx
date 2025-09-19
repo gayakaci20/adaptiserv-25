@@ -9,20 +9,32 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-export default function ServiceInputComponent() {
+interface ServiceInputProps {
+  value?: string;
+  onChange?: (value: string) => void;
+}
+
+export default function ServiceInputComponent({ value = '', onChange }: ServiceInputProps) {
   const id = useId()
+  
+  const handleValueChange = (selectedValue: string) => {
+    onChange?.(selectedValue);
+  };
+
   return (
     <div className="*:not-first:mt-2">
       <Label htmlFor={id}>Service</Label>
-      <Select>
+      <Select value={value} onValueChange={handleValueChange}>
         <SelectTrigger id={id} className="bg-white">
           <SelectValue placeholder="Sélectionner un service" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="1">Service 1</SelectItem>
-          <SelectItem value="2">Service 2</SelectItem>
-          <SelectItem value="3">Service 3</SelectItem>
-          <SelectItem value="4">Service 4</SelectItem>
+          <SelectItem value="Développement Web">Développement Web</SelectItem>
+          <SelectItem value="Application Mobile">Application Mobile</SelectItem>
+          <SelectItem value="E-commerce">E-commerce</SelectItem>
+          <SelectItem value="Consultation">Consultation</SelectItem>
+          <SelectItem value="Maintenance">Maintenance</SelectItem>
+          <SelectItem value="Autre">Autre</SelectItem>
         </SelectContent>
       </Select>
     </div>

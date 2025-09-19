@@ -6,9 +6,12 @@ import { BatteryChargingIcon, UserIcon } from "lucide-react";
 import { GlobeIcon } from "lucide-react";
 import { PrinterIcon } from "lucide-react";
 import SplitText from "@/components/text/SplitText";
-import StarBorder from "@/components/button/StarBorder"
+import FooterSection from "@/components/sections/footer/default";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <div className="min-h-screen w-full bg-[#f8fafc] relative">
       {/* Bottom Fade Grid Background */}
@@ -48,7 +51,7 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <SpotlightCard>
-            <div className="flex flex-col items-center justify-center p-6 h-64">
+            <div className="flex flex-col items-center justify-center p-6 h-64 cursor-pointer hover:scale-105 transition-transform duration-200" onClick={() => router.push("/contact")}>
               <div className="mb-6">
                 <BatteryChargingIcon className="w-6 h-6 text-gray-700" />
               </div>
@@ -58,7 +61,7 @@ export default function Home() {
           </SpotlightCard>
 
           <SpotlightCard>
-            <div className="flex flex-col items-center justify-center p-6 h-64">
+            <div className="flex flex-col items-center justify-center p-6 h-64 cursor-pointer hover:scale-105 transition-transform duration-200" onClick={() => router.push("/contact")}>
               <div className="mb-6">
                 <GlobeIcon className="w-6 h-6 text-gray-700" />
               </div>
@@ -68,7 +71,7 @@ export default function Home() {
           </SpotlightCard>
 
           <SpotlightCard>
-            <div className="flex flex-col items-center justify-center p-6 h-64">
+            <div className="flex flex-col items-center justify-center p-6 h-64 cursor-pointer hover:scale-105 transition-transform duration-200" onClick={() => router.push("/contact")}>
               <div className="mb-6">
                 <PrinterIcon className="w-6 h-6 text-gray-700" />
               </div>
@@ -78,7 +81,7 @@ export default function Home() {
           </SpotlightCard>
 
           <SpotlightCard>
-            <div className="flex flex-col items-center justify-center p-6 h-64">
+            <div className="flex flex-col items-center justify-center p-6 h-64 cursor-pointer hover:scale-105 transition-transform duration-200" onClick={() => router.push("/contact")}>
               <div className="mb-6">
                 <UserIcon className="w-6 h-6 text-gray-700" />
               </div>
@@ -87,6 +90,15 @@ export default function Home() {
             </div>
           </SpotlightCard>
         </div>
+      </div>
+      <div className="container mx-auto px-4 py-8 max-w-6xl mt-30"> 
+        <div className="text-center mb-10">
+          <SplitText className="text-6xl font-bold text-gray-900" text="À propos de nous" />
+        </div>
+        <SplitText className="text-center text-gray-600" text="adaptiserv est une entreprise de services professionnels qui offre des solutions sur-mesure pour les entreprises. Nous sommes spécialisés dans le courtage en énergie, les services digitaux, la sérigraphie et les agents commerciaux." />
+      </div>
+      <div className="relative z-10 mt-30">
+        <FooterSection />
       </div>
     </div>
   )

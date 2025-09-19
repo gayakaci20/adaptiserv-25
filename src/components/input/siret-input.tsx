@@ -2,18 +2,19 @@
 
 import { useId } from "react"
 
-import { useCharacterLimit } from "@/hooks/use-character-limit"
 import { Input } from "@/components/ui/input"
 
-export default function SiretInputComponent() {
+interface SiretInputProps {
+  value?: string;
+  onChange?: (value: string) => void;
+}
+
+export default function SiretInputComponent({ value = '', onChange }: SiretInputProps) {
   const id = useId()
   const maxLength = 14
-  const {
-    value,
-    characterCount,
-    handleChange,
-    maxLength: limit,
-  } = useCharacterLimit({ maxLength })
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange?.(e.target.value);
+  };
 
   return (
     <div className="*:not-first:mt-2 bg-white">
@@ -34,7 +35,7 @@ export default function SiretInputComponent() {
           aria-live="polite"
           role="status"
         >
-          {characterCount}/{limit}
+          {value.length}/{maxLength}
         </div>
       </div>
     </div>

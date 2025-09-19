@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react"
 import EmailInput from "@/components/input/email-input"
 import NameInputComponent from "@/components/input/name-input"
 import Name2InputComponent from "@/components/input/name2-input"
@@ -12,9 +13,92 @@ import ServiceInputComponent from "@/components/input/service-input"
 import { MobileNav, Navbar, NavBody, NavItems, NavbarLogo, MobileNavItems } from "@/components/ui/resizable-navbar"
 import LoadingButton from "@/components/button/loading-button"
 import SplitText from "@/components/text/SplitText"
-import StarBorder from "@/components/button/StarBorder"
+import FooterSection from "@/components/sections/footer/default"
+
+interface FormData {
+  name: string;
+  name2: string;
+  email: string;
+  siret: string;
+  phone: string;
+  date: string;
+  time: string;
+  service: string;
+  message: string;
+}
 
 export default function ContactPage() {
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    name2: '',
+    email: '',
+    siret: '',
+    phone: '',
+    date: '',
+    time: '',
+    service: '',
+    message: ''
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [status, setStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' });
+
+  const handleInputChange = (field: keyof FormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setStatus({ type: null, message: '' });
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setStatus({
+          type: 'success',
+          message: result.message || 'Votre message a été envoyé avec succès!'
+        });
+        // Reset form
+        setFormData({
+          name: '',
+          name2: '',
+          email: '',
+          siret: '',
+          phone: '',
+          date: '',
+          time: '',
+          service: '',
+          message: ''
+        });
+      } else {
+        setStatus({
+          type: 'error',
+          message: result.error || 'Une erreur s\'est produite lors de l\'envoi.'
+        });
+      }
+    } catch {
+      setStatus({
+        type: 'error',
+        message: 'Une erreur réseau s\'est produite. Veuillez réessayer.'
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen w-full bg-[#f8fafc] relative">
       {/* Bottom Fade Grid Background */}
@@ -46,22 +130,49 @@ export default function ContactPage() {
       
       <div className="container mx-auto px-4 py-8 max-w-4xl mt-30 relative z-20"> 
         <SplitText className="text-6xl font-bold mb-4 text-center mb-10 text-gray-900" text="Contact" />
-        <form className="space-y-6">
+        
+        {/* Status Messages */}
+        {status.type && (
+          <div className={`mb-6 p-4 rounded-lg border ${
+            status.type === 'success' 
+              ? 'bg-green-50 border-green-200 text-green-800' 
+              : 'bg-red-50 border-red-200 text-red-800'
+          }`}>
+            {status.message}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Prénom et Nom */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <NameInputComponent />
-            <Name2InputComponent />
+            <NameInputComponent 
+              value={formData.name}
+              onChange={(value: string) => handleInputChange('name', value)}
+            />
+            <Name2InputComponent 
+              value={formData.name2}
+              onChange={(value: string) => handleInputChange('name2', value)}
+            />
           </div>
 
           {/* Email et SIRET/SIREN */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <EmailInput />
-            <SiretInputComponent />
+            <EmailInput 
+              value={formData.email}
+              onChange={(value: string) => handleInputChange('email', value)}
+            />
+            <SiretInputComponent 
+              value={formData.siret}
+              onChange={(value: string) => handleInputChange('siret', value)}
+            />
           </div>
 
           {/* Numéro de téléphone */}
           <div className="w-full">
-            <PhoneInputComponent />
+            <PhoneInputComponent 
+              value={formData.phone}
+              onChange={(value: string) => handleInputChange('phone', value)}
+            />
           </div>
 
           {/* Préférences de contact */}
@@ -70,11 +181,20 @@ export default function ContactPage() {
               Préférences de contact
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <DateInputComponent />
-              <TimeInputComponent />
+              <DateInputComponent 
+                value={formData.date}
+                onChange={(value: string) => handleInputChange('date', value)}
+              />
+              <TimeInputComponent 
+                value={formData.time}
+                onChange={(value: string) => handleInputChange('time', value)}
+              />
               <div className="space-y-2">
                 <div className="relative">
-                    <ServiceInputComponent />
+                  <ServiceInputComponent 
+                    value={formData.service}
+                    onChange={(value: string) => handleInputChange('service', value)}
+                  />
                 </div>
               </div>
             </div>
@@ -82,12 +202,22 @@ export default function ContactPage() {
 
           {/* Message */}
           <div className="w-full">
-            <MessageInputComponent />
+            <MessageInputComponent 
+              value={formData.message}
+              onChange={(value: string) => handleInputChange('message', value)}
+            />
           </div>
           <div className="w-full">
-            <LoadingButton  />   
+            <LoadingButton 
+              isLoading={isLoading}
+              disabled={isLoading}
+              type="submit"
+            />   
           </div>
         </form>
+      </div>
+      <div className="relative z-10 mt-30">
+        <FooterSection />
       </div>
     </div>
   )

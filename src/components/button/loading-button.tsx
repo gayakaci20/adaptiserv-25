@@ -1,29 +1,33 @@
 "use client"
 
-import { useState } from "react"
 import { LoaderCircleIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
-export default function LoadingButton() {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+interface LoadingButtonProps {
+  isLoading?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
+  children?: React.ReactNode;
+  type?: "button" | "submit" | "reset";
+}
 
-  const handleClick = () => {
-    setIsLoading(true)
-    // Simulate an async operation
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 1000) // Reset after 1 second
-  }
-
+export default function LoadingButton({ 
+  isLoading = false, 
+  onClick, 
+  disabled = false, 
+  children = "Envoyer",
+  type = "submit"
+}: LoadingButtonProps) {
   return (
     <Button
-      onClick={handleClick}
-      disabled={isLoading}
+      type={type}
+      onClick={onClick}
+      disabled={isLoading || disabled}
       data-loading={isLoading || undefined}
       className="group relative disabled:opacity-100 w-full h-10 px-3 py-2 text-sm"
     >
-      <span className="group-data-loading:text-transparent">Envoyer</span>
+      <span className="group-data-loading:text-transparent">{children}</span>
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center">
           <LoaderCircleIcon

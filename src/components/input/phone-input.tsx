@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useId, useState } from "react"
+import React, { useId } from "react"
 import { ChevronDownIcon, PhoneIcon } from "lucide-react"
 import * as RPNInput from "react-phone-number-input"
 import flags from "react-phone-number-input/flags"
@@ -8,9 +8,18 @@ import flags from "react-phone-number-input/flags"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 
-export default function PhoneInputComponent() {
+interface PhoneInputComponentProps {
+  value?: string;
+  onChange?: (value: string) => void;
+}
+
+export default function PhoneInputComponent({ value = '', onChange }: PhoneInputComponentProps) {
   const id = useId()
-  const [value, setValue] = useState("")
+
+  const handleChange = (newValue: string | undefined) => {
+    const phoneValue = newValue ?? '';
+    onChange?.(phoneValue);
+  };
 
   return (
     <div className="*:not-first:mt-2 bg-white" dir="ltr">
@@ -23,7 +32,7 @@ export default function PhoneInputComponent() {
         id={id}
         placeholder="Entrer le numéro de téléphone"
         value={value}
-        onChange={(newValue) => setValue(newValue ?? "")}
+        onChange={handleChange}
       />
     </div>
   )
